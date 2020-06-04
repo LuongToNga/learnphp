@@ -1,0 +1,178 @@
+<?php
+  if (isset ($_POST['save'])) {
+    $id = $_POST ['txtid'];
+    $name = $_POST ['txtname'];
+    $class = $_POST ['txtclass'];
+    $subjects = $_POST ['subject'];
+
+    $countSubject = ' ';
+
+    foreach ($subjects as $subject){
+      $countSubject .= $subject . ' ' ;
+    }
+    echo $countSubject;
+
+    $sql =  "insert into subject (id, name, class, subject) values ('$id', '$name', '$class', '$countSubject')";
+    $run = mysqli_query($conn, $sql);
+    if($run) {
+      $mail = new PHPMailer(true);             
+      try {
+          $mail->SMTPDebug = 2;               
+          $mail->isSMTP();
+          $mail->Host = 'smtp.gmail.com';  
+          $mail->SMTPAuth = true;    
+          $mail->Username = 'luongnga6980@gmail.com';    
+          $mail->Password = 'Hagiahan17';    
+          $mail->SMTPSecure = 'tls';    
+          $mail->Port = 587;            
+          $mail->CharSet='UTF-8';
+          $mail->setFrom('luongnga6980@gmail.com');
+          $mail->addAddress('ngaltt.281@gmail.com', 'Luong Nga');    
+          $mail->isHTML(true);    
+          $mail->Subject = 'CHỌN MÔN HỌC';
+          $mail->Body    = 'Các môn học được chọn là: '.$countSubject;
+          $mail->AltBody = 'hoàn thành';
+          $mail->send();
+          echo 'Message has been sent';
+      } catch (Exception $e) {
+          echo 'Message could not be sent. Mailer Error: ', $mail->ErrorInfo;
+      }
+    }
+    else {
+      echo"<script>alert('Not successful')</script>";
+    }
+  } 
+  ?>
+
+
+  $(document).ready(function(){
+        $('#semester').on('change', function(){
+            var semesterID = $(this).val();
+            if (semesterID){
+                $.get(
+                    "ajax.php",
+                    {semester: semesterID},
+                    function(data){
+                        $('#subject').html(data);
+                    }
+                );
+            }eles{
+                $('#subject').html('<option> Select Semester First</option>')
+            }
+        });
+
+    });
+
+    <!-- ------------------------------------------------- -->
+        Select Semester: 
+        <select type="text" name="semestername" id="semester" onchange="change_country()">
+            <?php
+                $query_semester = "select * from semesters";
+                $resuilt_semester = mysqli_query($conn, $query_semester);
+                while ($row1 = mysqli_fetch_array($resuilt_semester)){
+                    echo '<option value = "'.$row1['id'].'">'.$row1['name'].'</option>';
+                }
+            ?>
+        </select><br>
+        <!-- ------------------------------------------------- -->
+        Select Subject: 
+        <select type="text" name="subjectname" id="subject">
+        <?php
+            $query_subject = "select * from subjects inner join semesters on subjects.semesterid = semesters.semesterid";
+            $resuilt_subject = mysqli_query($conn, $query_subject);
+            while ($row2 = mysqli_fetch_array($resuilt_subject)){
+                echo '<option value = "'.$row2['semesterid'].'">'.$row2['name'].'</option>';
+            }
+        ?>
+        </select><br>
+
+        <?php 
+    
+    if(isset($_POST['ok'])){
+        $userName = $_POST['username'];
+        $passWord = $_POST['pw'];
+        $rePassWord = $_POST['re_pw'];
+        $email = $_POST['email'];
+        $fullName = $_POST['fullname']; 
+        $className = $_POST['classname'];    
+
+        $anhtam = $_FILES['image'] ['tmp_name'];
+        $image = $_FILES['image'] ['name'];
+        move_uploaded_file($anhtam, '../images/'. $image);
+        // kiểm tra điều kiện bắt buộc đối với các file không được bỏ trống
+        if($userName == "" || $passWord == "" || $rePassWord == "" || $email =="" || $fullName =="" || $anhtam == ""){
+            echo "<script> alert ('Bạn vui lòng điền đầy đủ thông tin')</script>";
+        }
+        else{
+            // kiểm tra tài khoản đã tồn tại chưa
+            $sql = "SELECT * FROM register2 WHERE username = '$userName'";
+            $check_user = mysqli_query($conn, $sql);
+            if(mysqli_num_rows($check_user) > 0){
+                echo "<script> alert ('Tài khoản đã tồn tại')</script>";
+            }
+            // kiểm tra email đã có người dùng chưa
+            // $sql = "SELECT * FROM dangky WHERE email = '$email'";
+            // $check_email = mysqli_query($conn, $sql);
+            // if(mysqli_num_rows($check_email) > 0){
+            //     echo "<script> alert ('Email này đã có người dùng. Vui lòng chọn Email khác.')</script>";
+            // }
+            else{
+                // thực hiện lệnh lưu trưc dữ liệu vào db
+                $sql = "INSERT INTO register2 (username, password, email, fullname, classname, picture)
+                VALUES ('$userName', '$passWord', '$email', '$fullName', '$className', '$image')";
+                $run = mysqli_query($conn, $sql);
+                if($run){
+                    echo "<script> alert ('Bạn đã đăng ký thành công')</script>";
+                }    
+                else{
+                    echo "<script> alert ('Đăng ký chưa hoàn tất')</script>";
+                }   
+            }
+        }
+        
+    }   
+?>
+
+<script>
+    $(document).ready(function(){
+        $('#semester').change(function(){
+            var semester_id = $(this).val();
+            $.ajax({
+                url: "fetch_subject.php";
+                method: "POST",
+                data: {semesterId: semester_id},
+                dataType: "text",
+                succes: function(data){
+                    $(#subject).html(data);
+                }
+            });
+        });
+    }
+    </script>
+
+    Select Semester: 
+        <select class="action" type="text" name="semester" id="semester" onchange="load()">
+            <option value = "">Select Semester</option>
+            <?php echo load_semester();?>
+        </select><br>
+
+        function load_semester(){
+    $conn = mysqli_connect('localhost', 'root','123456', 'register') or die ('Lỗi kết nối');
+    $output = ''; 
+    $sql = "select * from semesters order by semester_name";
+    $result = mysqli_query($conn, $sql);
+    while ($row = mysqli_fetch_array($result)){
+        $output .= '<option value = "'.$row['semester_id'].'">'.$row['semester_name'].'</option>';
+    }
+    return $output;
+}
+
+Select Subject: 
+        <select class="action" type="text" name="subject" id="subject" >
+        <?php
+            $query_subject = "select * from subjects";
+            $resuilt_subject = mysqli_query($conn, $query_subject);
+            while ($row2 = mysqli_fetch_array($resuilt_subject)){
+                echo '<option value = "'.$row2[0].'">'.$row2['semester_id'].$row2['subject_name'].'</option>';
+            }
+        ?>
