@@ -12,7 +12,7 @@
     <style>
         .container{
             width: 330px;
-            height: 450px;
+            height: 500px;
             background-color: darkslategray;
             color: whitesmoke;
             box-sizing: border-box;
@@ -49,6 +49,10 @@
             background-color: rgb(66, 209, 235);
             margin: 20px 0;
         }
+        a{
+            color: white;
+            /* text-decoration: none; */
+        }
 
     </style>
 </head>
@@ -57,11 +61,15 @@
     <form method="POST" >
         <div class="container">
         <div class="tittle">LOGIN</div>
-            Username:
+            Student Code:
             <input class="form-insert" type="text" name="username" placeholder="username">
             Password:
             <input class="form-insert" type="password" name="pw" placeholder="Password">
             <input class="form-button" type="submit" name="ok" value=" Login">
+            <?php
+                $link_to_register = "http://localhost:8008/learnphp/RegisterRelearn/register-student.php";
+            ?>
+            <a href='<?php echo $link_to_register; ?>' target='_blank'>Register here?</a>
         </div>
     </form>   
     <?php 

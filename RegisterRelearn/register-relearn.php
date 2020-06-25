@@ -1,24 +1,25 @@
 <?php
+    session_start();
+?>
+<?php
 include ('connect.php');
 function fill_semester($conn){
     $output = '';
     $sql = "select * from semesters";
     $result = mysqli_query($conn, $sql);
     while ($row = mysqli_fetch_array($result)){
-        $ouput .= '<option value = "'.$row['semester_id'].'">'.$row['semester_name'].'</option>';
-    }
-    return $ouput;
-};
-function fill_subject($conn){
-    $output = '';
-    $sql = " select * from subjects";
-    $result = mysqli_query($conn, $sql);
-    while ($row = mysqli_fetch_array($result)){
-        $output .= '<div style = "border: 3px solid white; padding: 20px;">'.$row['subject_name'].'';
-        $output .= '</div>';
-
+        $output .= '<option value = "'.$row['semester_id'].'">'.$row['semester_name'].'</option>';
     }
     return $output;
+};
+function fill_subject($conn){
+    $sql = " select * from subjects";
+    $result = mysqli_query($conn, $sql);
+    echo '<select name = "subject" id = "subject">';
+    while ($row = mysqli_fetch_array($result)){
+        echo '<option value = "'.$row['subject_name'].'"">'.$row['subject_name'].'</option>';
+    }
+    echo '</select>';
 }
 
 ?>
@@ -70,22 +71,21 @@ function fill_subject($conn){
     <form method="POST" action="register-relearn.php" >
         <div class="container">
         <div class="tittle">REGISTER RELEARN</div>
-        <input class="form-insert" type="text" name="username" placeholder="Your Username">
-        <input class="form-insert" type="text" name="fullname" placeholder="Your Fullname">
+        <input class="form-insert" type="text" name="username" placeholder="Student Code">
+        <input class="form-insert" type="text" name="fullname" placeholder="Fullname">
         
         Select Semester: 
         <select name="semester" id="semester">
-            <option value = "">Show All Semester</option>
             <?php echo fill_semester($conn);?>
         </select><br><br>
 
         
         Select Subject:
-        <div class="row" id="subject">
+        <div class="row" name="subject" id="subject">
             <?php echo fill_subject($conn);?>
         </div>
    
-        <input class="form-click" type="submit" name="ok" value="Register">
+        <input class="form-click" type="submit" name="ok" value="Print the invoice">
         <input class="form-click" type="reset" name="cancel" value="Cancel">
         </div>
     </form>
@@ -115,7 +115,7 @@ $(document).ready(function(){
         $semester = $_POST['semester']; 
         $subject = $_POST['subject'];    
         // kiểm tra điều kiện bắt buộc đối với các file không được bỏ trống
-        if($userName == "" || $passWord == "" || $semester == "" || $subject == ""){
+        if($userName == "" || $fullname == "" || $semester == "" || $subject == ""){
             echo "<script> alert ('Bạn vui lòng điền đầy đủ thông tin')</script>";
         }
         else{
@@ -131,11 +131,40 @@ $(document).ready(function(){
                 VALUES ('$userName', '$fullname', '$semester', '$subject')";
                 $run = mysqli_query($conn, $sql);
                 if($run){
-                    echo "<script> alert ('Bạn đã đăng ký môn học thành công')</script>";
+                    // echo "<script> alert ('Successful')</script>";
+                    $invoiceName = fopen("Your-invoice.txt", "w") or die("Unable to open file!");
+                    $contenFile = " ".PHP_EOL."Student Code: ".$_POST['username']."<br>" ."Fullname: ".$_POST['fullname']."<br>" ."Semester: ".$_POST['semester']."<br>" ."Subject: ".$_POST['subject'].PHP_EOL;
+                    $openFile = fopen("Your-invoice.txt", 'a');
+                    $record = fwrite ($openFile, $contenFile );
+                    if ($record){
+                        $query = "SELECT credit FROM subjects WHERE subject_name = '$subject'";
+                        $run_sql = mysqli_query($conn, $query);
+                        $row = mysqli_fetch_array($run_sql);
+                        if (mysqli_num_rows($run_sql) == 0){
+                            echo "<script> alert ('Môn học không hợp lệ')</script>";
+                        }
+                        else {
+                            echo "<script> alert ('Hoàn thành')</script>";
+                            $file = fopen("Your-invoice.txt", 'r') or exit ('Not found file');
+                            echo "<h1>Hóa đơn</h1>"; 
+                            while (!feof($file)){ // eof - end of file    
+                                echo fgets($file)."<br>";
+                            }
+                            echo "Credit: " .$row['credit']."<br>"; 
+
+                            echo "Tổng phí học lại là: " .$total = $row['credit'] * 200000;
+
+                            $invoiceName2 = fopen("Your-invoice.txt", "w") or die("Unable to open file!");
+                            $contenFile2 = " ".PHP_EOL."Student Code: ".$row['credit']."<br>" ."Fullname: ".$total."<br>".PHP_EOL;
+                            $record2 = fwrite ($openFile2, $contenFile2 );
+                        } 
+                    } 
+                    else{
+                        echo "<script> alert ('Đăng ký chưa hoàn tất')</script>";
+                    }  
+                    
                 }    
-                else{
-                    echo "<script> alert ('Đăng ký chưa hoàn tất')</script>";
-                }   
+                 
             }
         }
         

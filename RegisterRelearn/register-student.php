@@ -1,4 +1,7 @@
 <?php
+    session_start();
+?>
+<?php
 include ('connect.php');
 ?>
 <!DOCTYPE html>
@@ -12,7 +15,6 @@ include ('connect.php');
     <style>
         .container{
             width: 330px;
-            height: 700px;
             background-color: darkslategray;
             color: whitesmoke;
             box-sizing: border-box;
@@ -40,19 +42,23 @@ include ('connect.php');
             background-color: rgb(66, 209, 235);
             margin: 20px 0;
         }
+        a{
+            color: white;
+            /* text-decoration: none; */
+        }
 
     </style>
 </head>
 
 <body>
-    <form method="POST" action="register.php" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data">
         <div class="container">
         <div class="tittle">REGISTER STUDENT</div>
-            <input class="form-insert" type="text" name="username" placeholder="Your Username">
-            <input class="form-insert" type="password" name="pw" placeholder="Your Password">
+            <input class="form-insert" type="text" name="username" placeholder="Student Code">
+            <input class="form-insert" type="password" name="pw" placeholder="Password">
             <input class="form-insert" type="password" name="re_pw" placeholder="Re-password">
-            <input class="form-insert" type="text" name="email" placeholder="Your Email">
-            <input class="form-insert" type="text" name="fullname" placeholder="Your Fullname">
+            <input class="form-insert" type="text" name="email" placeholder="Email">
+            <input class="form-insert" type="text" name="fullname" placeholder="Fullname">
             Select Class Name: 
             <select type="text" name="classname">
             <?php
@@ -64,11 +70,15 @@ include ('connect.php');
                 <?php echo $row1[1];?>
             </option>
             <?php endwhile;?>     
-        </select><br>
-            Hình ảnh
+            </select><br><br>
+            Avatar
             <input type="file" name="image" >
             <input class="form-click" type="submit" name="ok" value="Register">
             <input class="form-click" type="reset" name="cancel" value="Cancel">
+            <?php
+                $link_to_login = "http://localhost:8008/learnphp/RegisterRelearn/login.php";
+            ?>
+            <a href='<?php echo $link_to_login; ?>' target='_blank'>Login here?</a>
         </div>
     </form>   
     <?php 
@@ -93,7 +103,7 @@ include ('connect.php');
             $sql = "SELECT * FROM register2 WHERE username = '$userName'";
             $check_user = mysqli_query($conn, $sql);
             if(mysqli_num_rows($check_user) > 0){
-                echo "<script> alert ('Tài khoản đã tồn tại')</script>";
+                echo "<script> alert ('Người dùng này đã tồn tại')</script>";
             }
             // kiểm tra email đã có người dùng chưa
             // $sql = "SELECT * FROM dangky WHERE email = '$email'";

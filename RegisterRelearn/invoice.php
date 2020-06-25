@@ -9,14 +9,13 @@
     <form method = "POST">
         File name: <input type = "text" name = "namefile">
         Enter content here: <input type = "text" name = "contentfile">
-        Enter content here: <input type = "text" name = "contentfile2">
         <input type = "submit" name ="save" value="Save File"><br><br>
     </form>
     
     <?php
     if(isset($_POST['save'])){
         $file_name = $_POST['namefile'];
-        $conten_file = " ".PHP_EOL.$_POST['contentfile'].$_POST['contentfile2'].PHP_EOL;
+        $conten_file = " ".PHP_EOL.$_POST['contentfile'].PHP_EOL;
         $openFile = fopen($file_name.".txt", 'a');   
         $record = fwrite ($openFile, $conten_file );
         if ($record){

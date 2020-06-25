@@ -10,10 +10,12 @@ if(isset($_POST['semester_id'])){
         $sql = "select * from semesters";
     }
     $result = mysqli_query($conn, $sql);
-
+    echo '<select name = "subject" id = "subject">';
     while($row = mysqli_fetch_array($result)){
-        $output .= '<div style = "border: 3px solid white; padding: 20px;">'.$row['subject_name'].'</div>';
+        
+        echo '<option value = "'.$row['subject_name'].'"">'.$row['subject_name'].'</option>';
+       
     }
-    echo $output;
+    echo '</select>'; 
 }
 ?>

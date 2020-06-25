@@ -45,14 +45,14 @@
     <form method="POST" action="register.php" enctype="multipart/form-data">
         <div class="container">
         <div class="tittle">REGISTER</div>
-            <input class="form-insert" type="text" name="txtusername" placeholder="username">
-            <input class="form-insert" type="password" name="txtpw" placeholder="password">
-            <input class="form-insert" type="password" name="txtre_pw" placeholder="re-password">
-            <input class="form-insert" type="text" name="txtfullname" placeholder="fullname">
-            Hình ảnh
+            <input class="form-insert" type="text" name="txtusername" placeholder="Your Username">
+            <input class="form-insert" type="password" name="txtpw" placeholder="Your Password">
+            <input class="form-insert" type="password" name="txtre_pw" placeholder="Re-password">
+            <input class="form-insert" type="text" name="txtfullname" placeholder="Your Fullname">
+            Your avatar
             <input type="file" name="txtimage" >
             <input class="form-click" type="submit" name="ok" value="Register">
-            <input class="form-click" type="refresh" name="Cancel" value="Cancel">
+            <input class="form-click" type="reset" name="Cancel" value="Cancel">
         </div>
     </form>   
     <?php 
