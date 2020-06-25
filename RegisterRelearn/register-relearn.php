@@ -132,43 +132,28 @@ $(document).ready(function(){
                 $run = mysqli_query($conn, $sql);
                 if($run){
                     // echo "<script> alert ('Successful')</script>";
+                    $query = "SELECT credit FROM subjects WHERE subject_name = '$subject'";
+                    $run_sql = mysqli_query($conn, $query);
+                    $row = mysqli_fetch_array($run_sql);
+                    echo "<script> alert ('Hoàn thành')</script>";
+                    $total = $row['credit'] * 200000;
                     $invoiceName = fopen("Your-invoice.txt", "w") or die("Unable to open file!");
-                    $contenFile = " ".PHP_EOL."Student Code: ".$_POST['username']."<br>" ."Fullname: ".$_POST['fullname']."<br>" ."Semester: ".$_POST['semester']."<br>" ."Subject: ".$_POST['subject'].PHP_EOL;
+                    $contenFile = " ".PHP_EOL."Mã sinh viên: ".$_POST['username']."<br>" ."Tên đầy đủ: ".$_POST['fullname']."<br>" ."Kì học: ".$_POST['semester']."<br>" ."Môn học: ".$_POST['subject']."<br>"."Số tín chỉ: ".$row['credit']."<br>"."<b>Tổng học phí phải thanh toán: </b>".$total." đồng".PHP_EOL;
                     $openFile = fopen("Your-invoice.txt", 'a');
                     $record = fwrite ($openFile, $contenFile );
-                    if ($record){
-                        $query = "SELECT credit FROM subjects WHERE subject_name = '$subject'";
-                        $run_sql = mysqli_query($conn, $query);
-                        $row = mysqli_fetch_array($run_sql);
-                        if (mysqli_num_rows($run_sql) == 0){
-                            echo "<script> alert ('Môn học không hợp lệ')</script>";
-                        }
-                        else {
-                            echo "<script> alert ('Hoàn thành')</script>";
-                            $file = fopen("Your-invoice.txt", 'r') or exit ('Not found file');
-                            echo "<h1>Hóa đơn</h1>"; 
-                            while (!feof($file)){ // eof - end of file    
-                                echo fgets($file)."<br>";
-                            }
-                            echo "Credit: " .$row['credit']."<br>"; 
-
-                            echo "Tổng phí học lại là: " .$total = $row['credit'] * 200000;
-
-                            $invoiceName2 = fopen("Your-invoice.txt", "w") or die("Unable to open file!");
-                            $contenFile2 = " ".PHP_EOL."Student Code: ".$row['credit']."<br>" ."Fullname: ".$total."<br>".PHP_EOL;
-                            $record2 = fwrite ($openFile2, $contenFile2 );
-                        } 
-                    } 
-                    else{
-                        echo "<script> alert ('Đăng ký chưa hoàn tất')</script>";
-                    }  
-                    
-                }    
-                 
-            }
+                    $file = fopen("Your-invoice.txt", 'r') or exit ('Not found file');
+                    echo "<h1>Hóa đơn</h1>"; 
+                        while (!feof($file)){ // eof - end of file    
+                        echo fgets($file)."<br>";
+                    }
+                } 
+                else{
+                    echo "<script> alert ('Đăng ký chưa hoàn tất')</script>";
+                }        
+            }           
         }
-        
-    }   
+    }
+         
 ?>
     
     
