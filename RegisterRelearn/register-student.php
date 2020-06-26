@@ -112,16 +112,33 @@ include ('connect.php');
             //     echo "<script> alert ('Email này đã có người dùng. Vui lòng chọn Email khác.')</script>";
             // }
             else{
-                // thực hiện lệnh lưu trưc dữ liệu vào db
-                $sql = "INSERT INTO register2 (username, password, email, fullname, classname, picture)
-                VALUES ('$userName', '$passWord', '$email', '$fullName', '$className', '$image')";
-                $run = mysqli_query($conn, $sql);
-                if($run){
-                    echo "<script> alert ('Bạn đã đăng ký thành công')</script>";
-                }    
+                $check_chacracter = "[\W]";
+                $test = preg_match($check_chacracter, $userName);
+                if ($test == 1){
+                    echo "<script> alert ('Mã sinh viên không được chứa ký tự đặc biệt')</script>";
+                }
                 else{
-                    echo "<script> alert ('Đăng ký chưa hoàn tất')</script>";
-                }   
+                    if(strlen($passWord) < 6){
+                        echo "<script> alert ('Mật khẩu phải 6 ký tự trở lên')</script>";
+                    }
+                    else {
+                        if($passWord != $passWord){
+                            echo "<script> alert ('Mật khẩu và nhập lại mật khẩu phải trùng nhau')</script>";
+                        }
+                        else {
+                            // thực hiện lệnh lưu trưc dữ liệu vào db
+                            $sql = "INSERT INTO register2 (username, password, email, fullname, classname, picture)
+                            VALUES ('$userName', '$passWord', '$email', '$fullName', '$className', '$image')";
+                            $run = mysqli_query($conn, $sql);
+                            if($run){
+                                echo "<script> alert ('Bạn đã đăng ký thành công')</script>";
+                            }    
+                            else{
+                                echo "<script> alert ('Đăng ký chưa hoàn tất')</script>";
+                            }   
+                        }
+                    }
+                }  
             }
         }
         

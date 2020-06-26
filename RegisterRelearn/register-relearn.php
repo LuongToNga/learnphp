@@ -30,7 +30,7 @@ function fill_subject($conn){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REGISTER</title>
+    <title>REGISTER RELEARN</title>
     <link href="https://fonts.googleapis.com/css?family=Chakra+Petch&display=swap" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <style>
@@ -104,7 +104,7 @@ $(document).ready(function(){
             }
         });
     });
-});
+}) 
 
 </script>
 <?php 
@@ -138,13 +138,13 @@ $(document).ready(function(){
                     echo "<script> alert ('Hoàn thành')</script>";
                     $total = $row['credit'] * 200000;
                     $invoiceName = fopen("Your-invoice.txt", "w") or die("Unable to open file!");
-                    $contenFile = " ".PHP_EOL."Mã sinh viên: ".$_POST['username']."<br>" ."Tên đầy đủ: ".$_POST['fullname']."<br>" ."Kì học: ".$_POST['semester']."<br>" ."Môn học: ".$_POST['subject']."<br>"."Số tín chỉ: ".$row['credit']."<br>"."<b>Tổng học phí phải thanh toán: </b>".$total." đồng".PHP_EOL;
+                    $contenFile = PHP_EOL."Mã sinh viên: ".$userName ."<br>"."Tên đầy đủ: ".$fullname."<br>" ."Kì học: ".$semester."<br>" ."Môn học: ".$subject."<br>"."Số tín chỉ: ".$row['credit']."<br>"."<b>Tổng học phí phải thanh toán: </b>".$total." đồng".PHP_EOL;
                     $openFile = fopen("Your-invoice.txt", 'a');
                     $record = fwrite ($openFile, $contenFile );
                     $file = fopen("Your-invoice.txt", 'r') or exit ('Not found file');
                     echo "<h1>Hóa đơn</h1>"; 
                         while (!feof($file)){ // eof - end of file    
-                        echo fgets($file)."<br>";
+                        echo fgets($file);
                     }
                 } 
                 else{
